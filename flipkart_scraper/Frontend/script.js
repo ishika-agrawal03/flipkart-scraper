@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     // API CONFIG
-    const API_URL = 'http://127.0.0.1:8000/mobiles';
+    const API_URL = 'https://flipkart-api-xbmr.onrender.com/mobiles';
 
     // DOM ELEMENTS
     const navHome = document.getElementById('navHome');
