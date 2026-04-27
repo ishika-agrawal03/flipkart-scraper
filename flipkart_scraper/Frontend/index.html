@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Web Scraper | Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Background element for gradients -->
+    <div class="app-background"></div>
+
+    <header class="header glass-panel borderless">
+        <div class="logo">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10h16v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V10z"></path><path d="M12 2v8"></path><path d="m8 6 4-4 4 4"></path></svg>
+            <h1>Flipkart Mobile Web Scraper</h1>
+        </div>
+        <div class="header-actions">
+            <a href="#" id="navHome" class="nav-link active">Dashboard</a>
+            <a href="#" id="navAbout" class="nav-link">About Project</a>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle Theme">
+                <svg id="moonIcon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                <svg id="sunIcon" class="hidden" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+            </button>
+        </div>
+    </header>
+
+    <main class="container">
+        
+        <div id="homeView">
+        <!-- Top Center Controls Panel -->
+        <section class="controls-container">
+            <div class="controls-panel glass-panel">
+                <div class="control-group">
+                    <label for="maxPrice">Max Price</label>
+                    <div class="input-wrapper">
+                        <span class="prefix">₹</span>
+                        <input type="number" id="maxPrice" placeholder="Unlimited" min="0">
+                    </div>
+                </div>
+                
+                <div class="control-divider"></div>
+
+                <div class="control-group">
+                    <label for="minRating">Min Rating</label>
+                    <div class="input-wrapper">
+                        <span class="prefix">★</span>
+                        <input type="number" id="minRating" placeholder="Any" min="0" max="5" step="0.1">
+                    </div>
+                </div>
+
+                <div class="control-divider"></div>
+                
+                <div class="control-group">
+                    <label for="sortOption">Sort</label>
+                    <div class="input-wrapper selection-wrapper">
+                        <select id="sortOption">
+                            <option value="">Default</option>
+                            <option value="sort_price=low">Price: Low to High</option>
+                            <option value="sort_price=high">Price: High to Low</option>
+                            <option value="popularity=high">Top Rated</option>
+                        </select>
+                        <svg class="chevron" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </div>
+                </div>
+                
+                <button id="searchBtn" class="primary-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    Fetch
+                </button>
+            </div>
+        </section>
+
+        <!-- Loading Indicator -->
+        <div id="loader" class="loader-container hidden">
+            <div class="futuristic-loader">
+                <div class="spinner"></div>
+                <p>Syncing Database...</p>
+            </div>
+        </div>
+
+        <!-- Empty State -->
+        <div id="noResults" class="empty-state hidden glass-panel">
+            <div class="empty-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+            </div>
+            <h2>Zero records returned</h2>
+            <p>Try easing your filtering constraints to broaden the search scope.</p>
+        </div>
+
+        <!-- Data View Container -->
+        <div id="dataContainer" class="table-container glass-panel hidden">
+            <div class="table-header-custom">
+                <div>
+                    <h2>Scraped Data</h2>
+                    <p class="subtitle">Live from SQLite storage</p>
+                </div>
+                
+                
+                <span id="itemCount" class="badge">0 items</span>
+            </div>
+            
+            <!-- Table View -->
+            <div id="tableView" class="table-wrapper">
+                <table id="resultsTable">
+                    <thead>
+                        <tr>
+                            <th>Image</th>
+                            <th>Product Name</th>
+                            <th>Price</th>
+                            <th>Rating</th>
+                            <th>View Item</th>
+                        </tr>
+                    </thead>
+                    <tbody id="resultsBody">
+                        <!-- Javascript injection -->
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+        
+        </div> <!-- End of homeView -->
+
+        <!-- Detailed About Section -->
+        <section id="aboutView" class="about-project-section hidden">
+            <div class="about-glow"></div>
+            <div class="glass-panel about-main-card new-about-card">
+                <div class="about-hero">
+                    <h2>Flipkart Mobile Web Scraper</h2>
+                    <p class="about-lead">A Flipkart Web Scraper project that extracts, processes, and presents mobile product data through an interactive UI.</p>
+                </div>
+                
+                <div class="about-modern-grid">
+                    <!-- Tech Stack -->
+                    <div class="about-modern-card glass-panel">
+                        <!-- <div class="card-icon">⚙️</div> -->
+                        <h2>Tech Stack</h2>
+                        <p><span class="text-accent">Scrapy</span>, <span class="text-accent">Python</span>, <span class="text-accent">SQLite</span>, <span class="text-accent">FastAPI</span>, HTML, CSS, JavaScript</p>
+                    </div>
+
+                    <!-- Workflow -->
+                    <div class="about-modern-card glass-panel">
+                        <h2>Workflow</h2>
+                        <div class="modern-workflow-steps">
+                            <span class="workflow-pill">Scraping</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="workflow-arrow"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+                            <span class="workflow-pill">Processing</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="workflow-arrow"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+                            <span class="workflow-pill">Storage</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="workflow-arrow"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+                            <span class="workflow-pill">API</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="workflow-arrow"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+                            <span class="workflow-pill highlight">UI</span>
+                        </div>
+                    </div>
+
+                    <!-- Features -->
+                    <div class="about-modern-card glass-panel">
+                        <h2>Features</h2>
+                        <ul class="clean-list">
+                            <li><span class="text-accent">Sorting:</span> Price (Low&ndash;High, High&ndash;Low),Top-Rated</li>
+                            <li><span class="text-accent">Filtering:</span> Minimum Rating, Maximum Price</li>
+                        </ul>
+                    </div>
+
+                    <!-- Creator -->
+                    <div class="about-modern-card glass-panel">
+                        <h2>Creator</h2>
+                        <p><span class="text-accent">Ishika Agrawal</span></p>
+                    </div>
+
+                    <!-- UI Development -->
+                    <div class="about-modern-card glass-panel wide-card">
+                        <h2>UI Development</h2>
+                        <p>The interface is designed with the help of <span class="text-accent">Antigravity AI</span> and structured for responsiveness, usability, and a clean modern tech-driven look.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2026 Mobile Product Scraper. All rights reserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
